@@ -1,42 +1,47 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
+import React, { forwardRef } from "react";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import React, { FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
-// Corrected the interface name from 'onSumbit' to 'onSubmit'
 interface UploadFormInputProps {
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isLoading?: boolean;
 }
 
-export default function UploadFormInput({ onSubmit }: UploadFormInputProps) {
-  const { toast } = useToast();
+const UploadFormInput = forwardRef<HTMLFormElement, UploadFormInputProps>(
+  ({ onSubmit, isLoading }, ref) => {
+    return (
+      <form
+        className="flex flex-col gap-6"
+        onSubmit={onSubmit}
+        ref={ref}
+      >
+        <div className="flex justify-end items-center gap-1.5">
+          <Input
+            id="file"
+            type="file"
+            name="file"
+            accept="application/pdf"
+            required
+            className={cn(isLoading && 'opacity-50 cursor-not-allowed')}
+            disabled={isLoading}
+          />
+        </div>
+        <Button disabled={isLoading}>
+          {isLoading ? (
+            <> 
+               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+            </>
+          ): (
+            'Upload your PDF'
+          )}
+        </Button>
+      </form>
+    );
+  }
+);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    // Show toast when form is submitted
-    toast({
-      title: "PDF Upload",
-      description: "Your file is being processed...",
-    });
-    
-    // Call the original onSubmit function
-    onSubmit(e);
-  };
+UploadFormInput.displayName = "UploadFormInput";
 
-  return (
-    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-      <div className="flex justify-end items-center gap-1.5">
-        <Input
-          id="file"
-          type="file"
-          name="file"
-          accept="application/pdf"
-          required
-          className=""
-        />
-        <Button type="submit">Upload your PDF</Button>
-      </div>
-    </form>
-  );
-}
+export default UploadFormInput;

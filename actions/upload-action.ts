@@ -1,6 +1,7 @@
 'use server';
 
 import { fetchAndExtractPdfText } from "@/lib/langchain";
+import { generateSummaryFromOpenAI } from "@/lib/openai";
 
 export async function generatedPdfSummary(uploadResponse: {
     serverData: {
@@ -37,17 +38,43 @@ export async function generatedPdfSummary(uploadResponse: {
     try {
         const pdfText = await fetchAndExtractPdfText(pdfUrl);
         console.log("Extracted PDF Text:", pdfText);
-        
-        // You probably want to return the extracted text or process it further
-        return {
-            success: true,
-            message: 'PDF processed successfully',
-            data: {
-                text: pdfText,
-                fileName,
-                userId
+
+        let summary;
+        try {
+            summary = await generateSummaryFromOpenAI(pdfText);
+            console.log({ summary });
+        } catch (error) {
+           console.log("Error generating summary:", error); 
+
+           //call gemini code in case of an error
+        }
+
+        if (!summary) {
+            return {
+                success: false,
+                message: 'Failed to generate summary',
+                data: null,
             }
         }
+
+        return{
+            success: true,
+            message: 'Summary generated successfully',
+            data: {
+                summary,
+           }
+        }
+        
+        // You probably want to return the extracted text or process it further
+        // return {
+        //     success: true,
+        //     message: 'PDF processed successfully',
+        //     data: {
+        //         text: pdfText,
+        //         fileName,
+        //         userId
+        //     }
+        // }
         
     } catch (error) {
         console.error("Error processing PDF:", error);
