@@ -3,6 +3,7 @@ import BgGradient from "@/components/common/bg-gradient";
 import { Button } from "@/components/ui/button";
 import DemoSection from "@/components/home/demo-section";
 import HowItWorksSection from "@/components/home/how-it-works-section";
+import Pricing from "@/components/home/pricing"
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
         <HeroSection />
         <DemoSection />
         <HowItWorksSection />
+        <Pricing />
       </div>
     </div>
   );
