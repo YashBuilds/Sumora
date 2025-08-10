@@ -1,5 +1,6 @@
 "use client";
 
+import { generatedPdfSummary } from "@/actions/upload-action";
 import UploadFormInput from "@/components/upload/upload-form-input";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -83,6 +84,8 @@ export default function UploadForm() {
       description: 'Hang tight! Our AI is reading through your document! ✨',
     });
     // parse the pdf using lang chain
+    const summary = await generatedPdfSummary(resp);
+    console.log({ summary});
     // summarize the pdf using AI
     // save the summary to the database
     // redirect to the [id] summary page
