@@ -2,18 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import React, { FormEvent } from "react";
 
+// Corrected the interface name from 'onSumbit' to 'onSubmit'
 interface UploadFormInputProps {
-  onSumbit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }
 
-export default function UploadFormInput({
-  onSumbit,
-}: {
-  onSumbit: () => void;
-}) {
+export default function UploadFormInput({ onSubmit }: UploadFormInputProps) {
   return (
-    <form className="flex flex-col gap-6">
+    <form className="flex flex-col gap-6" onSubmit={onSubmit}>
       <div className="flex justify-end items-center gap-1.5">
         <Input
           id="file"
@@ -23,7 +21,7 @@ export default function UploadFormInput({
           required
           className=""
         />
-        <Button>Upload your PDF</Button>
+        <Button type="submit">Upload your PDF</Button>
       </div>
     </form>
   );
