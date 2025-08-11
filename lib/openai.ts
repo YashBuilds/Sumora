@@ -10,11 +10,11 @@ export async function generateSummaryFromOpenAI(pdfText: string) {
   try {
     // Call the OpenAI Chat Completions API
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o", // Or "gpt-4o" for faster & cheaper responses
+      model: "gpt-4o-mini", // Corrected model name
       messages: [
         {
           role: "system",
-          content: SUMMARY_SYSTEM_PROMPT // Define your system prompt for summarization
+          content: SUMMARY_SYSTEM_PROMPT
         },
         {
           role: "user",
@@ -26,7 +26,7 @@ export async function generateSummaryFromOpenAI(pdfText: string) {
     });
 
     // Return the generated summary text
-    return completion.choices[0].message.content;
+    return completion.choices[0]?.message?.content;
   } catch (error: any) {
     // Handle rate limit errors
     if (error?.status === 429) {
