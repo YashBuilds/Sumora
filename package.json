@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.24.1",
     "@langchain/community": "^0.3.50",
     "@langchain/core": "^0.3.68",
+    "@neondatabase/serverless": "^1.0.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.14",
     "@uploadthing/react": "^7.3.2",
