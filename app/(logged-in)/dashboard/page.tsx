@@ -7,6 +7,7 @@ import { getSummaries } from "@/lib/summaries";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import EmptySummaryState from "@/components/summaries/empty-summary-state";
+import { hasReachedUploadLimit } from "@/lib/user";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -16,7 +17,7 @@ export default async function DashboardPage() {
     return redirect('/sign-in');
   }
 
-  const uploadLimit = 5;
+  const { hasReachedLimit, uploadLimit } = await hasReachedUploadLimit(userId);
   const summaries = await getSummaries(userId);
 
   return (
@@ -34,7 +35,8 @@ export default async function DashboardPage() {
             </p>
           </div>
           
-          <Button
+          { !hasReachedLimit && (
+            <Button
             variant="link"
             className="bg-gradient-to-r from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 hover:scale-105 transition-all duration-300 group hover:no-underline"
             asChild
@@ -43,11 +45,12 @@ export default async function DashboardPage() {
               <Plus className="w-5 h-5 mr-2" />
               New Summary
             </Link>
-          </Button>
+          </Button>)}
         </div>
 
-        <div className="mb-6">
+       { hasReachedLimit && (<div className="mb-6">
           <div className="bg-rose-50 border border-rose-200 rounded-lg p-5 text-rose-800">
+
             <p className="text-sm">
               You've reached the limit of {uploadLimit} uploads on the Basic plan.{" "}
               <Link
@@ -61,6 +64,7 @@ export default async function DashboardPage() {
             </p>
           </div>
         </div>
+      )}
         
         {summaries.length === 0 ?  ( 
           <EmptySummaryState />

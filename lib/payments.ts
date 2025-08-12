@@ -30,32 +30,41 @@ export async function handleCheckoutSessionCompleted({
   session: Stripe.Checkout.Session;
   stripe: Stripe;
 }) {
-  console.log("Checkout session completed", session);
+  try {
+    console.log("Checkout session completed", session.id);
 
-  // Use the expanded customer object directly - don't retrieve again
-  const customer = session.customer as Stripe.Customer;
-  const priceId = session.line_items?.data[0]?.price?.id;
+    // Use the expanded customer object directly - don't retrieve again
+    const customer = session.customer as Stripe.Customer;
+    const priceId = session.line_items?.data[0]?.price?.id;
 
-  if (customer && customer.email && priceId) {
-    const { email, name, id: customerId } = customer;
+    console.log("Customer:", customer?.email, "PriceId:", priceId);
 
-    const sql = await getDbConnection();
+    if (customer && customer.email && priceId) {
+      const { email, name, id: customerId } = customer;
 
-    await createOrUpdateUser({
-      sql,
-      email: email as string,
-      fullName: (name || 'Unknown') as string,
-      customerId: customerId,
-      priceId: priceId as string,
-      status: "active",
-    });
+      const sql = await getDbConnection();
 
-    await createPayment({
-      sql,
-      session,
-      priceId: priceId as string,
-      userEmail: email as string,
-    });
+      await createOrUpdateUser({
+        sql,
+        email: email as string,
+        fullName: (name || 'Unknown') as string,
+        customerId: customerId,
+        priceId: priceId as string,
+        status: "active",
+      });
+
+      await createPayment({
+        sql,
+        session,
+        priceId: priceId as string,
+        userEmail: email as string,
+      });
+    } else {
+      console.error("Missing data - Customer:", !!customer, "Email:", !!customer?.email, "PriceId:", !!priceId);
+    }
+  } catch (error) {
+    console.error("Error in handleCheckoutSessionCompleted:", error);
+    throw error;
   }
 }
 
@@ -75,17 +84,40 @@ async function createOrUpdateUser({
   status: string;
 }) {
   try {
+    console.log("Checking user for email:", email);
+    
     const user = await sql`SELECT * FROM users WHERE email = ${email}`;
+    
+    console.log("Found", user.length, "users with email:", email);
+    
     if (user.length === 0) {
-      // Fixed: removed extra comma after status
-      await sql`INSERT INTO users (email, full_name, customer_id, price_id, status) VALUES (${email}, ${fullName}, ${customerId}, ${priceId}, ${status})`;
+      console.log("Inserting new user...");
+      
+      const result = await sql`
+        INSERT INTO users (email, full_name, customer_id, price_id, status) 
+        VALUES (${email}, ${fullName}, ${customerId}, ${priceId}, ${status})
+        RETURNING *
+      `;
+      
+      console.log('✅ User inserted:', result[0]?.email);
     } else {
-      // Update existing user
-      await sql`UPDATE users SET full_name = ${fullName}, customer_id = ${customerId}, price_id = ${priceId}, status = ${status} WHERE email = ${email}`;
+      console.log("Updating existing user...");
+      
+      const result = await sql`
+        UPDATE users SET 
+          full_name = ${fullName}, 
+          customer_id = ${customerId}, 
+          price_id = ${priceId}, 
+          status = ${status}
+        WHERE email = ${email}
+        RETURNING *
+      `;
+      
+      console.log('✅ User updated:', result[0]?.email);
     }
-    console.log('✅ User created/updated successfully');
   } catch (error) {
-    console.error("Error creating or updating user", error);
+    console.error("💥 Error in createOrUpdateUser:", error);
+    throw error;
   }
 }
 
@@ -103,9 +135,17 @@ async function createPayment({
   try {
     const { amount_total, id, status } = session;
 
-    await sql`INSERT INTO payments (amount, status, stripe_payment_id, price_id, user_email) VALUES(${amount_total}, ${status}, ${id}, ${priceId}, ${userEmail})`;
-    console.log('✅ Payment record created successfully');
+    console.log("Creating payment:", { amount_total, id, status, priceId, userEmail });
+
+    const result = await sql`
+      INSERT INTO payments (amount, status, stripe_payment_id, price_id, user_email) 
+      VALUES(${amount_total}, ${status}, ${id}, ${priceId}, ${userEmail})
+      RETURNING *
+    `;
+    
+    console.log('✅ Payment created:', result[0]?.stripe_payment_id);
   } catch (error) {
-    console.error("Error creating payment", error);
+    console.error("💥 Error creating payment:", error);
+    throw error;
   }
 }
