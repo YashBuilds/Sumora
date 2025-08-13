@@ -16,6 +16,22 @@ interface PdfSummaryType {
     fileName: string;
 }
 
+export async function genertePdfText({
+    fileUrl,
+    fileName,
+}:{
+    fileUrl: string,
+    fileName: string,
+}) {
+    if (!fileUrl) {
+        return {
+            success: false,
+            message: 'File upload failed',
+            data: null,
+        }
+    }
+}
+
 export async function generatePdfSummary(uploadResponse: {
     serverData: {
         userId: string;
