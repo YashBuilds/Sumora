@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { hasReachedUploadLimit } from "@/lib/user";
 import { MotionDiv } from "@/components/common/motion-wrapper";
 
+export const maxDuration = 60;
+
 export default async function Page() {
   const user = await currentUser();
 
