@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useUploadThing } from "@/utils/uploadthing";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import LoadingSkeleton from "./loading-skeleton";
 
 const schema = z.object({
   file: z
@@ -151,6 +152,7 @@ export default function UploadForm() {
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl">
       <UploadFormInput isLoading={isLoading} onSubmit={handleSubmit} />
+      <LoadingSkeleton />
     </div>
   );
 }
