@@ -19,7 +19,6 @@ const pointVariants = {
     x: 0,
     scale: 1,
     transition: {
-      type: "spring",
       damping: 20,
       stiffness: 100,
       duration: 0.6,
@@ -34,7 +33,6 @@ const emojiVariants = {
     scale: 1,
     rotate: 0,
     transition: {
-      type: "spring",
       damping: 15,
       stiffness: 200,
       duration: 0.8,
@@ -48,7 +46,6 @@ const bulletVariants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: "spring",
       damping: 20,
       stiffness: 300,
       duration: 0.5,

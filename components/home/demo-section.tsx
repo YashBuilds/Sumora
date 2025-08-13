@@ -1,10 +1,117 @@
+// 'use client';
+
+// import { Pizza } from 'lucide-react';
+// import { 
+//   MotionDiv, 
+//   MotionSection, 
+//   MotionH3 
+// } from '@/components/common/motion-wrapper';
+// import { SummaryViewer } from '@/components/summaries/summary-viewer';
+
+// const DEMO_SUMMARY = `## Quick Overview
+// [... your existing summary content ...]`;
+
+// export default function DemoSection() {
+//   return (
+//     <MotionSection
+//       className="relative"
+//       initial={{ opacity: 0 }}
+//       whileInView={{ opacity: 1 }}
+//       viewport={{ once: true, amount: 0.3 }}
+//       transition={{ staggerChildren: 0.3, delayChildren: 0.2 }}
+//     >
+//       <MotionDiv className="py-10 sm:py-16 lg:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+//         {/* Background Gradient */}
+//         <MotionDiv
+//           aria-hidden="true"
+//           className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
+//           initial={{ opacity: 0, scale: 0.8 }}
+//           whileInView={{ opacity: 0.3, scale: 1 }}
+//           transition={{ duration: 2, ease: "easeOut" }}
+//         >
+//           <div
+//             className="relative left-1/2 aspect-[1155/678] w-[30rem] sm:w-[50rem] -translate-x-1/2 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 opacity-30"
+//             style={{
+//               clipPath:
+//                 "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.6%, 60.3% 62.4%, 52.6% 68.6%, 47.5% 58.3%, 45.4% 35.5%, 27.5% 56.8%, 24.9% 17.9%, 100% 27.6%, 76.8% 76.1%, 97.7% 74.1%)"
+//             }}
+//           />
+//         </MotionDiv>
+
+//         <MotionDiv 
+//           className="flex flex-col items-center text-center space-y-4"
+//           initial="hidden"
+//           whileInView="visible"
+//         >
+//           {/* Icon */}
+//           <MotionDiv
+//             className="inline-flex items-center justify-center p-2 rounded-2xl bg-gray-100/80 backdrop-blur-xs border border-gray-500/20 mb-4"
+//             initial={{ opacity: 0, scale: 0, rotate: -180 }}
+//             whileInView={{ 
+//               opacity: 1, 
+//               scale: 1, 
+//               rotate: 0,
+//               transition: { type: "spring", damping: 12, stiffness: 100, duration: 1 } 
+//             }}
+//             whileHover={{ scale: 1.1, rotate: 10 }}
+//             whileTap={{ scale: 0.95 }}
+//           >
+//             <Pizza className="w-6 h-6 text-rose-500" />
+//           </MotionDiv>
+          
+//           {/* Heading */}
+//           <MotionDiv className="text-center mb-10 sm:mb-16">
+//             <MotionH3
+//               className="font-bold text-2xl sm:text-3xl lg:text-4xl max-w-2xl mx-auto px-2 sm:px-6"
+//               initial={{ opacity: 0, y: 30 }}
+//               whileInView={{ 
+//                 opacity: 1, 
+//                 y: 0,
+//                 transition: { type: "spring", damping: 20, stiffness: 80, duration: 0.8 } 
+//               }}
+//             >
+//               Watch how Sumora transforms{" "}
+//               <MotionDiv
+//                 className="inline-block bg-gradient-to-r from-rose-500 to-rose-700 bg-clip-text text-transparent"
+//                 initial={{ opacity: 0 }}
+//                 whileInView={{ 
+//                   opacity: 1,
+//                   transition: { duration: 0.8, delay: 0.5, ease: "easeOut" } 
+//                 }}
+//               >
+//                 this Next.js course PDF
+//               </MotionDiv>{" "}
+//               into an easy-to-read summary!
+//             </MotionH3>
+//           </MotionDiv>
+          
+//           {/* Summary Viewer */}
+//           <MotionDiv
+//             className="flex justify-center items-center w-full px-1 sm:px-4 lg:px-6"
+//             initial={{ opacity: 0, y: 50 }}
+//             whileInView={{ 
+//               opacity: 1, 
+//               y: 0,
+//               transition: { type: "spring", damping: 20, stiffness: 60, duration: 1, delay: 0.4 } 
+//             }}
+//           >
+//             <SummaryViewer summary={DEMO_SUMMARY} />
+//           </MotionDiv>
+//         </MotionDiv>
+//       </MotionDiv>
+//     </MotionSection>
+//   );
+// }
+
+'use client';
+
 import { Pizza } from 'lucide-react';
 import { 
   MotionDiv, 
   MotionSection, 
   MotionH3 
 } from '@/components/common/motion-wrapper';
-import { containerVariants, itemVariants } from "@/utils/constants";
 import { SummaryViewer } from '@/components/summaries/summary-viewer';
 
 const DEMO_SUMMARY = `## Quick Overview
@@ -53,67 +160,14 @@ const DEMO_SUMMARY = `## Quick Overview
 - Built-in optimizations and developer experience
 - Opens doors to high-paying development opportunities`;
 
-const sectionVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.3, delayChildren: 0.2 }
-  }
-};
-
-const iconVariants = {
-  hidden: { opacity: 0, scale: 0, rotate: -180 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotate: 0,
-    transition: { type: "spring", damping: 12, stiffness: 100, duration: 1 }
-  }
-};
-
-const headingVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", damping: 20, stiffness: 80, duration: 0.8 }
-  }
-};
-
-const gradientTextVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.8, delay: 0.5, ease: "easeOut" }
-  }
-};
-
-const viewerContainerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", damping: 20, stiffness: 60, duration: 1, delay: 0.4 }
-  }
-};
-
-const backgroundVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 0.3,
-    scale: 1,
-    transition: { duration: 2, ease: "easeOut" }
-  }
-};
-
 export default function DemoSection() {
   return (
     <MotionSection
       className="relative"
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, amount: 0.3 }}
-      variants={sectionVariants}
+      transition={{ staggerChildren: 0.3, delayChildren: 0.2 }}
     >
       <MotionDiv className="py-10 sm:py-16 lg:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -121,39 +175,82 @@ export default function DemoSection() {
         <MotionDiv
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
-          variants={backgroundVariants}
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ 
+            opacity: 0.3, 
+            scale: 1,
+            transition: { 
+              duration: 2, 
+              ease: [0.16, 1, 0.3, 1] // Using cubic-bezier instead of string
+            }
+          }}
         >
           <div
             className="relative left-1/2 aspect-[1155/678] w-[30rem] sm:w-[50rem] -translate-x-1/2 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 opacity-30"
             style={{
               clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.6%, 60.3% 62.4%, 52.6% 68.6%, 47.5% 58.3%, 45.4% 35.5%, 27.5% 56.8%, 24.9% 17.9%, 100% 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.6%, 60.3% 62.4%, 52.6% 68.6%, 47.5% 58.3%, 45.4% 35.5%, 27.5% 56.8%, 24.9% 17.9%, 100% 27.6%, 76.8% 76.1%, 97.7% 74.1%)"
             }}
           />
         </MotionDiv>
 
-        <MotionDiv className="flex flex-col items-center text-center space-y-4" variants={containerVariants}>
-          
+        <MotionDiv className="flex flex-col items-center text-center space-y-4">
           {/* Icon */}
           <MotionDiv
             className="inline-flex items-center justify-center p-2 rounded-2xl bg-gray-100/80 backdrop-blur-xs border border-gray-500/20 mb-4"
-            variants={iconVariants}
-            whileHover={{ scale: 1.1, rotate: 10, transition: { duration: 0.2 } }}
-            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0, rotate: -180 }}
+            whileInView={{ 
+              opacity: 1, 
+              scale: 1, 
+              rotate: 0,
+              transition: { 
+                type: "spring", 
+                damping: 12, 
+                stiffness: 100, 
+                duration: 1 
+              } 
+            }}
+            whileHover={{ 
+              scale: 1.1, 
+              rotate: 10,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ 
+              scale: 0.95,
+              transition: { duration: 0.1 }
+            }}
           >
             <Pizza className="w-6 h-6 text-rose-500" />
           </MotionDiv>
           
           {/* Heading */}
-          <MotionDiv className="text-center mb-10 sm:mb-16" variants={itemVariants}>
+          <MotionDiv className="text-center mb-10 sm:mb-16">
             <MotionH3
               className="font-bold text-2xl sm:text-3xl lg:text-4xl max-w-2xl mx-auto px-2 sm:px-6"
-              variants={headingVariants}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ 
+                opacity: 1, 
+                y: 0,
+                transition: { 
+                  type: "spring", 
+                  damping: 20, 
+                  stiffness: 80, 
+                  duration: 0.8 
+                } 
+              }}
             >
               Watch how Sumora transforms{" "}
               <MotionDiv
                 className="inline-block bg-gradient-to-r from-rose-500 to-rose-700 bg-clip-text text-transparent"
-                variants={gradientTextVariants}
+                initial={{ opacity: 0 }}
+                whileInView={{ 
+                  opacity: 1,
+                  transition: { 
+                    duration: 0.8, 
+                    delay: 0.5, 
+                    ease: [0.16, 1, 0.3, 1] 
+                  } 
+                }}
               >
                 this Next.js course PDF
               </MotionDiv>{" "}
@@ -164,11 +261,21 @@ export default function DemoSection() {
           {/* Summary Viewer */}
           <MotionDiv
             className="flex justify-center items-center w-full px-1 sm:px-4 lg:px-6"
-            variants={viewerContainerVariants}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ 
+              opacity: 1, 
+              y: 0,
+              transition: { 
+                type: "spring", 
+                damping: 20, 
+                stiffness: 60, 
+                duration: 1, 
+                delay: 0.4 
+              } 
+            }}
           >
             <SummaryViewer summary={DEMO_SUMMARY} />
           </MotionDiv>
-
         </MotionDiv>
       </MotionDiv>
     </MotionSection>

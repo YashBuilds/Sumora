@@ -5,33 +5,36 @@ import { Badge } from '@/components/ui/badge';
 import { Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default async function PlanBadge() {
+interface PlanBadgeProps {
+  className?: string;
+}
+
+export default async function PlanBadge({ className }: PlanBadgeProps) {
   const user = await currentUser();
-  
+
   if (!user?.id) return null;
-  
+
   const email = user?.emailAddresses?.[0]?.emailAddress;
-  
   let priceId: string | null = null;
-  
+
   if (email) {
     priceId = await getPriceIdForActiveUser(email);
   }
-  
+
   let planName = 'Buy a plan';
-  
-  const plan = pricingPlans.find((plan) => plan.priceId === priceId);
-  
+
+  const plan = pricingPlans.find(plan => plan.priceId === priceId);
   if (plan) {
     planName = plan.name;
   }
-  
+
   return (
     <Badge
       variant='outline'
       className={cn(
         'ml-2 bg-gradient-to-r from-amber-100 to-amber-200 border-amber-300 flex flex-row items-center',
-        !priceId && 'from-red-100 to-red-200 border-red-300'
+        !priceId && 'from-red-100 to-red-200 border-red-300',
+        className // add the passed className here
       )}
     >
       <Crown

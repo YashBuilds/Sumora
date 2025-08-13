@@ -40,8 +40,8 @@ export default function UploadForm() {
         description: err.message,
       });
     },
-    onUploadBegin: ({ file }) => {
-      console.log("upload has begun for", file);
+    onUploadBegin: (data) => {
+      console.log("upload has begun for", data);
     },
   });
 
@@ -56,11 +56,15 @@ export default function UploadForm() {
 
       if (!(file instanceof File)) {
         console.error("No valid file selected");
+        toast({
+          title: "❌ No file selected",
+          variant: "destructive",
+          description: "Please select a PDF file to upload",
+        });
         return;
       }
 
       const validatedFields = schema.safeParse({ file });
-      console.log(validatedFields);
 
       if (!validatedFields.success) {
         toast({
@@ -70,7 +74,6 @@ export default function UploadForm() {
             validatedFields.error.flatten().fieldErrors.file?.[0] ??
             "Invalid file",
         });
-        setIsLoading(false);
         return;
       }
 
@@ -79,14 +82,13 @@ export default function UploadForm() {
         description: "We are uploading your PDF! ✨",
       });
 
-      const resp = await startUpload([file]);
-      if (!resp) {
+      const uploadResponse = await startUpload([file]);
+      if (!uploadResponse || uploadResponse.length === 0) {
         toast({
           title: "❌ Something went wrong",
           variant: "destructive",
           description: "Please use a different file",
         });
-        setIsLoading(false);
         return;
       }
 
@@ -95,45 +97,66 @@ export default function UploadForm() {
         description: "Hang tight! Our AI is reading through your document! ✨",
       });
 
-      const result = await generatePdfSummary(resp);
-      const { data = null } = result || {};
-
-      if (data) {
+      const uploadFileUrl = uploadResponse[0]?.serverData?.fileUrl;
+      
+      if (!uploadFileUrl) {
         toast({
-          title: "📄 Saving PDF...",
-          description:
-            "Hang tight! Our AI is saving your PDF summary! ✨",
+          title: "❌ Upload failed",
+          variant: "destructive",
+          description: "Failed to get file URL. Please try again.",
         });
-        
-        if (data.summary) {
-          const storeResult = await storePdfSummaryAction({
-            summary: data.summary,
-            fileUrl: resp[0].serverData.file.url,
-            title: data.title,
-            fileName: file.name,
-          });
+        return;
+      }
 
-          if (storeResult.success) {
-            toast({
-              title: '✨ Summary Generated',
-              description: 'Your PDF has been successfully summarized and saved! ✨',
-            });
+      const result = await generatePdfSummary({
+        fileUrl: uploadFileUrl,
+        fileName: file.name,
+      });
 
-            formRef.current?.reset();
-            router.push(`/summaries/${storeResult.data.id}`);
-          } else {
-            toast({
-              title: "❌ Failed to save summary",
-              variant: "destructive",
-              description: storeResult.message || "Please try again",
-            });
-          }
-        }
-      } else {
+      if (!result?.success || !result.data) {
         toast({
           title: "❌ Failed to generate summary",
           variant: "destructive",
           description: result?.message || "Please try again with a different file",
+        });
+        return;
+      }
+
+      const { data } = result;
+
+      toast({
+        title: "📄 Saving PDF...",
+        description: "Hang tight! Our AI is saving your PDF summary! ✨",
+      });
+      
+      if (data.summary) {
+        const storeResult = await storePdfSummaryAction({
+          summary: data.summary,
+          fileUrl: uploadFileUrl,
+          title: data.title,
+          fileName: file.name,
+        });
+
+        if (storeResult.success && storeResult.data?.id) {
+          toast({
+            title: '✨ Summary Generated',
+            description: 'Your PDF has been successfully summarized and saved! ✨',
+          });
+
+          formRef.current?.reset();
+          router.push(`/summaries/${storeResult.data.id}`);
+        } else {
+          toast({
+            title: "❌ Failed to save summary",
+            variant: "destructive",
+            description: storeResult.message || "Please try again",
+          });
+        }
+      } else {
+        toast({
+          title: "❌ No summary generated",
+          variant: "destructive",
+          description: "The PDF could not be processed. Please try again.",
         });
       }
     } catch (error) {
@@ -143,16 +166,19 @@ export default function UploadForm() {
         variant: "destructive",
         description: "An unexpected error occurred. Please try again.",
       });
-      formRef.current?.reset();
     } finally {
       setIsLoading(false);
+      formRef.current?.reset();
     }
   };
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl">
-      <UploadFormInput isLoading={isLoading} onSubmit={handleSubmit} />
-      <LoadingSkeleton />
+      <UploadFormInput 
+        isLoading={isLoading} 
+        onSubmit={handleSubmit}
+      />
+      {isLoading && <LoadingSkeleton />}
     </div>
   );
 }

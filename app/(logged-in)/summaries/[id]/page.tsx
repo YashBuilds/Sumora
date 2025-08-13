@@ -9,8 +9,14 @@ import { MotionDiv } from "@/components/common/motion-wrapper";
 import { Suspense } from "react";
 import LoadingSummary from "@/app/(logged-in)/summaries/[id]/loading";
 
-export default async function SummaryPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+// Updated interface for Next.js 15
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function SummaryPage({ params }: PageProps) {
+  // Await the params in Next.js 15
+  const { id } = await params;
   const summary = await getSummaryById(id);
 
   if (!summary) {
@@ -115,4 +121,15 @@ export default async function SummaryPage({ params }: { params: { id: string } }
       </div>
     </MotionDiv>
   );
+}
+
+// If you have generateMetadata, update it too:
+export async function generateMetadata({ params }: PageProps) {
+  const { id } = await params;
+  const summary = await getSummaryById(id);
+  
+  return {
+    title: summary ? `${summary.title} - Summary` : 'Summary',
+    description: summary ? `Summary of ${summary.file_name}` : 'PDF Summary',
+  };
 }
