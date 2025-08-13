@@ -18,8 +18,7 @@ export default async function Layout({
      user.emailAddresses[0].emailAddress
   );
 
-  // to do remove
-  if (hasActiveSubscription) {
+  if (!hasActiveSubscription) {
     return <UpgradeRequired />;
   }
 
