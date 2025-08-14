@@ -17,6 +17,9 @@ const fontSans = FontSans({
 export const metadata: Metadata = {
   title: "Sumora - AI-Powered PDF Summarization",
   description: "Save hours of reading. Transform lengthy PDFs into clear, accurate summaries in seconds with our advanced AI technology.",
+  icons: {
+    icon: '/icon.png'
+  },
   openGraph: {
     images: [
       {
