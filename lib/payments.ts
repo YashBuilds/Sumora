@@ -73,9 +73,9 @@ export function getPlanNameFromPriceId(priceId: string | null): string {
   if (!priceId) return 'Free Plan';
   
   switch (priceId) {
-    case 'price_1Ruz8vJcJZ36dt4XMuSziVoD':
+    case 'price_1Rvz4jJcJZ36dt4X3gKUlEuY':
       return 'Basic Plan';
-    case 'price_1Ruz8vJcJZ36dt4Xhvwe6N1v':
+    case 'price_1Rvz4jJcJZ36dt4XBqEmRbU6':
       return 'Pro Plan';
     default:
       return 'Free Plan';
