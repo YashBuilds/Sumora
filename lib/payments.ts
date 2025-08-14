@@ -15,7 +15,7 @@ export async function handleSubscriptionDeleted({
 
     const sql = await getDbConnection();
 
-    await sql`UPDATE users SET status = 'cancelled' WHERE customer_id = ${subscription.customer}`;
+    await sql`UPDATE users SET status = 'cancelled', price_id = NULL WHERE customer_id = ${subscription.customer}`;
     console.log('Subscription cancelled successfully')
   } catch (error) {
     console.error('Error handling subscription deleted', error);
@@ -66,6 +66,25 @@ export async function handleCheckoutSessionCompleted({
     console.error("Error in handleCheckoutSessionCompleted:", error);
     throw error;
   }
+}
+
+// Helper function to get plan name from price ID
+export function getPlanNameFromPriceId(priceId: string | null): string {
+  if (!priceId) return 'Free Plan';
+  
+  switch (priceId) {
+    case 'price_1Ruz8vJcJZ36dt4XMuSziVoD':
+      return 'Basic Plan';
+    case 'price_1Ruz8vJcJZ36dt4Xhvwe6N1v':
+      return 'Pro Plan';
+    default:
+      return 'Free Plan';
+  }
+}
+
+// Helper function to check if user has active subscription
+export function hasActiveSubscription(status: string | null, priceId: string | null): boolean {
+  return status === 'active' && priceId !== null;
 }
 
 async function createOrUpdateUser({

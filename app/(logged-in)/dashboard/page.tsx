@@ -8,7 +8,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import EmptySummaryState from "@/components/summaries/empty-summary-state";
 import { hasReachedUploadLimit } from "@/lib/user";
-import { MotionDiv, MotionH1, MotionP } from "@/components/common/motion-wrapper"; // Import your custom motion components
+import { MotionDiv, MotionH1, MotionP } from "@/components/common/motion-wrapper";
 
 // Animation variants
 const container = {
@@ -34,30 +34,35 @@ const fadeIn = {
 export default async function DashboardPage() {
   const user = await currentUser();
   const userId = user?.id;
-  
+
   if (!userId) {
-    return redirect('/sign-in');
+    return redirect("/sign-in");
   }
 
-  const { hasReachedLimit, uploadLimit } = await hasReachedUploadLimit(userId);
+  // ✅ Pass both userId and user's email here
+  const { hasReachedLimit, uploadLimit } = await hasReachedUploadLimit(
+    userId,
+    user.emailAddresses[0].emailAddress
+  );
+
   const summaries = await getSummaries(userId);
 
   return (
-    <MotionDiv 
+    <MotionDiv
       className="min-h-screen"
       initial="hidden"
       animate="show"
       variants={fadeIn}
     >
       <BgGradient className="from-emerald-200 via-teal-200 to-cyan-200" />
-      
+
       <div className="container mx-auto flex flex-col gap-4">
-        <MotionDiv 
+        <MotionDiv
           className="flex gap-4 mb-8 mt-8 justify-between"
           variants={item}
         >
           <div className="flex flex-col gap-2">
-            <MotionH1 
+            <MotionH1
               className="text-3xl font-bold tracking-tight bg-gradient-to-r from-gray-600 to-gray-900 bg-clip-text text-transparent"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -65,7 +70,7 @@ export default async function DashboardPage() {
             >
               Your Summaries
             </MotionH1>
-            <MotionP 
+            <MotionP
               className="text-gray-600"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -74,7 +79,7 @@ export default async function DashboardPage() {
               Transform your PDFs into concise, actionable insights
             </MotionP>
           </div>
-          
+
           {!hasReachedLimit && (
             <MotionDiv
               initial={{ opacity: 0, scale: 0.9 }}
@@ -98,18 +103,19 @@ export default async function DashboardPage() {
         </MotionDiv>
 
         {hasReachedLimit && (
-          <MotionDiv 
+          <MotionDiv
             className="mb-6"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <MotionDiv 
+            <MotionDiv
               className="bg-rose-50 border border-rose-200 rounded-lg p-5 text-rose-800"
               whileHover={{ scale: 1.01 }}
             >
               <p className="text-sm">
-                You've reached the limit of {uploadLimit} uploads on the Basic plan.{" "}
+                You've reached the limit of {uploadLimit} uploads on the Basic
+                plan.{" "}
                 <Link
                   href="/#pricing"
                   className="text-rose-800 underline font-medium underline-offset-4 inline-flex items-center hover:text-rose-900 transition-colors"
@@ -122,8 +128,8 @@ export default async function DashboardPage() {
             </MotionDiv>
           </MotionDiv>
         )}
-        
-        {summaries.length === 0 ? ( 
+
+        {summaries.length === 0 ? (
           <MotionDiv
             variants={fadeIn}
             initial="hidden"
@@ -132,14 +138,14 @@ export default async function DashboardPage() {
             <EmptySummaryState />
           </MotionDiv>
         ) : (
-          <MotionDiv 
+          <MotionDiv
             className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 sm:px-0"
             variants={container}
             initial="hidden"
             animate="show"
           >
             {summaries.map((summary, index) => (
-              <MotionDiv 
+              <MotionDiv
                 key={summary.id}
                 variants={item}
                 custom={index}
@@ -153,5 +159,5 @@ export default async function DashboardPage() {
         )}
       </div>
     </MotionDiv>
-  )
+  );
 }

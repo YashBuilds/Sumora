@@ -7,6 +7,11 @@ import Pricing from "@/components/home/pricing";
 import CTASection from "@/components/home/cta-section";
 
 export default function Home() {
+  console.log('Environment check:', {
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+    nodeEnv: process.env.NODE_ENV
+  });
+
   return (
     <div className="relative w-full">
       <BgGradient />
