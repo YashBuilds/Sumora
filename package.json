@@ -54,6 +54,10 @@
     },
     "eslint-plugin-tailwindcss": {
       "tailwindcss": "^4.1.11"
+    },
+    "zod": "^4.0.17",
+    "openai": {
+      "zod": "^4.0.17"
     }
   },
   "pnpm": {
@@ -64,6 +68,10 @@
       },
       "eslint-plugin-tailwindcss": {
         "tailwindcss": "^4.1.11"
+      },
+      "zod": "^4.0.17",
+      "openai": {
+        "zod": "^4.0.17"
       }
     }
   }
